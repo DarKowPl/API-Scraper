@@ -31,6 +31,7 @@ class RequestParameters:
         self.urls_list = []
         self.main_pages_creator = []
         self.single_list_links_settings = {}
+        self.all_single_adverts_links = {}
 
     def get_main_page_url(self) -> list:
         self.env.read_env(self.env_path)
@@ -164,6 +165,17 @@ class RequestParameters:
 
         return self.single_list_links_settings
 
+    def add_all_single_adverts_links(self, dict_key: str, settings_urls: dict) -> dict:
+
+        if dict_key in self.all_single_adverts_links:
+            for i in settings_urls.get(dict_key).get('urls'):
+                self.all_single_adverts_links[dict_key]['urls'].append(i)
+            return self.all_single_adverts_links
+
+        while dict_key not in self.all_single_adverts_links:
+            self.all_single_adverts_links.update(settings_urls)
+        return self.all_single_adverts_links
+
 
 class UrlRequest:
     def __init__(self):
@@ -222,7 +234,7 @@ class DataParser:
                     url = [content.find('a')['href']]
                     urls.extend(url)
 
-        number = random.randrange(2, 4)
+        number = random.randrange(2, 3)
         random_urls = random.sample(urls, number)
 
         return random_urls

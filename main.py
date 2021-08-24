@@ -8,7 +8,6 @@ from datetime import datetime
 pages_range = []
 main_advertise_urls_with_settings = {}
 single_adverts_links = []
-second_set_urls = {}
 
 request_parameters = RequestParameters()
 
@@ -64,17 +63,18 @@ def main_2():
             )
 
             if len(single_adverts_links) != 0:
-                updated_single_adverts = request_parameters.copy_settings_from_main_adverts_list(
+                updated_single_adverts_links = request_parameters.copy_settings_from_main_adverts_list(
                     dict_key,
                     single_adverts_links.copy()
                 )
 
-                if dict_key in second_set_urls:
-                    for i in updated_single_adverts.get(dict_key).get('urls'):
-                        second_set_urls[dict_key]['urls'].append(i)
-
-                while dict_key not in second_set_urls:
-                    second_set_urls.update(updated_single_adverts)
+                second_set_urls = request_parameters.add_all_single_adverts_links(dict_key, updated_single_adverts_links)
+                # if dict_key in second_set_urls:
+                #     for i in updated_single_adverts_links.get(dict_key).get('urls'):
+                #         second_set_urls[dict_key]['urls'].append(i)
+                #
+                # while dict_key not in second_set_urls:
+                #     second_set_urls.update(updated_single_adverts_links)
 
                 single_adverts_links.clear()
 
@@ -96,14 +96,11 @@ def main_2():
                     advert_details: dict = content.get_core_details()
                     advert_details.update(content.get_advert_stats())
                     advert_details['Date'] = datetime.now().isoformat(' ', 'seconds')
-                    print(advert_details)
 
                     add_advert = orm.TrojScrapperBase(**advert_details)
                     orm.session.add(add_advert)
                     orm.session.commit()
-
                     print(advert_details)
-                    # print(advert_stats)
                     print('*' * 80)
 
                     with open('core_deatails', 'a+') as file:
